@@ -1,0 +1,38 @@
+From 0e733d7bca088b1b1e9a665536d42c1c9464791a Mon Sep 17 00:00:00 2001
+From: zengxiao <zengxiao@eswincomputing.com>
+Date: Mon, 10 Oct 2022 14:43:50 +0800
+Subject: [PATCH 1/1] RISC-V: Fix R_RISCV_SUB6 dwarf information processing way
+
+This patch fixs the error of R_RISCV_SUB6 type in dwarf information processing.
+R_RISCV_SUB6 only the lower 6 bits of the code are valid.
+https://github.com/riscv-non-isa/riscv-elf-psabi-doc/releases/download/v1.0-rc4/riscv-abi.pdf
+
+bfd/ChangeLog:
+
+	* elfxx-riscv.c (riscv_elf_add_sub_reloc): Take the lower
+	6 bits as the significant bit
+---
+ bfd/elfxx-riscv.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/bfd/elfxx-riscv.c b/bfd/elfxx-riscv.c
+index 1bcc6c0acb4..a8fba1822bb 100644
+--- a/bfd/elfxx-riscv.c
++++ b/bfd/elfxx-riscv.c
+@@ -994,6 +994,13 @@ riscv_elf_add_sub_reloc (bfd *abfd,
+       relocation = old_value + relocation;
+       break;
+     case R_RISCV_SUB6:
++      {
++        bfd_vma six_bit_valid_value = old_value & howto->dst_mask;
++        six_bit_valid_value -= relocation;
++        relocation = (six_bit_valid_value & howto->dst_mask) |
++	              (old_value & ~howto->dst_mask);
++      }
++      break;
+     case R_RISCV_SUB8:
+     case R_RISCV_SUB16:
+     case R_RISCV_SUB32:
+-- 
+2.34.1
+
