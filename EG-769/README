@@ -35,7 +35,7 @@ DW_ CFA_??? (User defined call frame op: 0x3c)
 ```
 
 
-2. If you use patch, compile and generate new binutils, and use new RISC-V objdump, you will get correct dwarf information, such as:
+2. If you use [patch][https://github.com/zeng-xiao/gnu-bug-fix/blob/main/EG-769/0001-RISC-V-Fix-R_RISCV_SUB6-dwarf-information-processing.patch], compile and generate new binutils, and use new RISC-V objdump, you will get correct dwarf information, such as:
 ```
 Contents of the .debug_frame section:
 
