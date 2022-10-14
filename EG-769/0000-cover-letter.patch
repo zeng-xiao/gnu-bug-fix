@@ -1,0 +1,26 @@
+From 0af533900a9ca0b4a756107c52550114f08992d7 Mon Sep 17 00:00:00 2001
+From: zengxiao <zengxiao@eswincomputing.com>
+Date: Fri, 14 Oct 2022 14:18:20 +0800
+Subject: [PATCH 0/1] RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
+
+Hi all RISC-V folks:
+
+When riscv-objdump is used to generate dwarf information, problems are found, like:
+DW_CFA_??? (User defined call frame op: 0x3c)
+
+This error is related to that riscv-objdump does not follow the riscv R_RISCV_SUB6 standard. 
+Riscv-readelf is correct because it follows the R_RISCV_SUB6 standard.
+
+There are test cases in https://github.com/zeng-xiao/gnu-bug-fix/tree/main/EG-769
+that describe the error in detail. 
+
+---
+zengxiao (1):
+  RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
+
+ bfd/elfxx-riscv.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+-- 
+2.34.1
+
