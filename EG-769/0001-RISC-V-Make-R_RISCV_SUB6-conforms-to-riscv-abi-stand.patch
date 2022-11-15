@@ -1,7 +1,7 @@
-From 0af533900a9ca0b4a756107c52550114f08992d7 Mon Sep 17 00:00:00 2001
+From f3cd6ad6157169c68f1cf1576b272a7e0f6496fb Mon Sep 17 00:00:00 2001
 From: zengxiao <zengxiao@eswincomputing.com>
 Date: Mon, 10 Oct 2022 14:43:50 +0800
-Subject: [PATCH 1/1] RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
+Subject: [PATCH v1 1/1] RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
 
 This patch makes R_RISCV_SUB6 conforms to riscv abi standard.
 R_RISCV_SUB6 only the lower 6 bits of the code are valid.
@@ -10,19 +10,27 @@ https://github.com/riscv-non-isa/riscv-elf-psabi-doc/releases/download/v1.0-rc4/
 
 bfd/ChangeLog:
 
-	* elfxx-riscv.c (riscv_elf_add_sub_reloc): Take the lower
-	6 bits as the significant bit
+        * elfxx-riscv.c (riscv_elf_add_sub_reloc):
+
+binutils/ChangeLog:
+
+        * testsuite/binutils-all/riscv/dwarf-SUB6.d: New test.
+        * testsuite/binutils-all/riscv/dwarf-SUB6.s: New test.
 
 reviewed-by: gaofei@eswincomputing.com
              jinyanjiang@eswincomputing.com
 
 Signed-off-by: zengxiao <zengxiao@eswincomputing.com>
 ---
- bfd/elfxx-riscv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ bfd/elfxx-riscv.c                             |  7 +++++
+ .../testsuite/binutils-all/riscv/dwarf-SUB6.d | 31 +++++++++++++++++++
+ .../testsuite/binutils-all/riscv/dwarf-SUB6.s | 12 +++++++
+ 3 files changed, 50 insertions(+)
+ create mode 100644 binutils/testsuite/binutils-all/riscv/dwarf-SUB6.d
+ create mode 100644 binutils/testsuite/binutils-all/riscv/dwarf-SUB6.s
 
 diff --git a/bfd/elfxx-riscv.c b/bfd/elfxx-riscv.c
-index f0c91cc97f7..0fbfedd17fe 100644
+index 300ccf49534..e71d4a456f2 100644
 --- a/bfd/elfxx-riscv.c
 +++ b/bfd/elfxx-riscv.c
 @@ -994,6 +994,13 @@ riscv_elf_add_sub_reloc (bfd *abfd,
@@ -39,6 +47,62 @@ index f0c91cc97f7..0fbfedd17fe 100644
      case R_RISCV_SUB8:
      case R_RISCV_SUB16:
      case R_RISCV_SUB32:
+diff --git a/binutils/testsuite/binutils-all/riscv/dwarf-SUB6.d b/binutils/testsuite/binutils-all/riscv/dwarf-SUB6.d
+new file mode 100644
+index 00000000000..47d5ae570d7
+--- /dev/null
++++ b/binutils/testsuite/binutils-all/riscv/dwarf-SUB6.d
+@@ -0,0 +1,31 @@
++#PROG: objcopy
++#objdump: --dwarf=frames
++
++tmpdir/riscvcopy.o:     file format elf32-littleriscv
++
++Contents of the .eh_frame section:
++
++
++00000000 00000020 00000000 CIE
++  Version:               3
++  Augmentation:          "zR"
++  Code alignment factor: 1
++  Data alignment factor: -4
++  Return address column: 1
++  Augmentation data:     1b
++  DW_CFA_def_cfa_register: r2 \(sp\)
++  DW_CFA_def_cfa_offset: 48
++  DW_CFA_offset: r1 \(ra\) at cfa-4
++  DW_CFA_offset: r8 \(s0\) at cfa-8
++  DW_CFA_def_cfa: r8 \(s0\) ofs 0
++  DW_CFA_restore: r1 \(ra\)
++  DW_CFA_restore: r8 \(s0\)
++  DW_CFA_def_cfa: r2 \(sp\) ofs 48
++  DW_CFA_def_cfa_offset: 0
++  DW_CFA_nop
++
++00000024 00000010 00000028 FDE cie=00000000 pc=0000002c..0000002c
++  DW_CFA_nop
++  DW_CFA_nop
++  DW_CFA_nop
++
+diff --git a/binutils/testsuite/binutils-all/riscv/dwarf-SUB6.s b/binutils/testsuite/binutils-all/riscv/dwarf-SUB6.s
+new file mode 100644
+index 00000000000..fe959f59d9b
+--- /dev/null
++++ b/binutils/testsuite/binutils-all/riscv/dwarf-SUB6.s
+@@ -0,0 +1,12 @@
++        .attribute arch, "rv32i2p0_m2p0_a2p0_f2p0_c2p0"
++        .cfi_startproc
++        .cfi_def_cfa_offset 48
++        .cfi_offset 1, -4
++        .cfi_offset 8, -8
++        .cfi_def_cfa 8, 0
++        .cfi_restore 1
++        .cfi_restore 8
++        .cfi_def_cfa 2, 48
++        .cfi_def_cfa_offset 0
++        .cfi_endproc
++        
+\ No newline at end of file
 -- 
 2.34.1
 

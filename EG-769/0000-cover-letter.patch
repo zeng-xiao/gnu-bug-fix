@@ -1,7 +1,7 @@
-From 0af533900a9ca0b4a756107c52550114f08992d7 Mon Sep 17 00:00:00 2001
+From f3cd6ad6157169c68f1cf1576b272a7e0f6496fb Mon Sep 17 00:00:00 2001
 From: zengxiao <zengxiao@eswincomputing.com>
-Date: Fri, 14 Oct 2022 14:18:20 +0800
-Subject: [PATCH 0/1] RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
+Date: Tue, 15 Nov 2022 14:50:01 +0800
+Subject: [PATCH v1 0/1] RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
 
 Hi all RISC-V folks:
 
@@ -14,12 +14,15 @@ Riscv-readelf is correct because it follows the R_RISCV_SUB6 standard.
 There are test cases in https://github.com/zeng-xiao/gnu-bug-fix/tree/main/EG-769
 that describe the error in detail. 
 
----
 zengxiao (1):
   RISC-V: Make R_RISCV_SUB6 conforms to riscv abi standard
 
- bfd/elfxx-riscv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ bfd/elfxx-riscv.c                             |  7 +++++
+ .../testsuite/binutils-all/riscv/dwarf-SUB6.d | 31 +++++++++++++++++++
+ .../testsuite/binutils-all/riscv/dwarf-SUB6.s | 12 +++++++
+ 3 files changed, 50 insertions(+)
+ create mode 100644 binutils/testsuite/binutils-all/riscv/dwarf-SUB6.d
+ create mode 100644 binutils/testsuite/binutils-all/riscv/dwarf-SUB6.s
 
 -- 
 2.34.1
